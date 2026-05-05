@@ -3,7 +3,7 @@
 const days = [
   {
     date: "May 29",
-    day: "Thursday",
+    day: "Friday",
     label: "Day 0",
     title: "Arrival & Check-in",
     color: "#6b9fd4",
@@ -16,7 +16,7 @@ const days = [
   },
   {
     date: "May 30",
-    day: "Friday",
+    day: "Saturday",
     label: "Day 1",
     title: "Training Day",
     color: "#6b9fd4",
@@ -30,7 +30,7 @@ const days = [
   },
   {
     date: "May 31",
-    day: "Saturday",
+    day: "Sunday",
     label: "Day 2",
     title: "Practice & Qualifications",
     color: "#6b9fd4",
@@ -43,7 +43,7 @@ const days = [
   },
   {
     date: "June 1",
-    day: "Sunday",
+    day: "Monday",
     label: "Main Day",
     title: "Championship Day",
     color: "#c9a84c",
@@ -59,7 +59,7 @@ const days = [
   },
   {
     date: "June 2",
-    day: "Monday",
+    day: "Tuesday",
     label: "Day 4",
     title: "Departure Day",
     color: "#6b9fd4",
