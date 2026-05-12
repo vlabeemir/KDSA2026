@@ -15,6 +15,6 @@ jobs:
     steps:
       - name: Mirror upstream
         run: |
-          git clone --bare https://github.com/Ko8a/kdsfidachamp.git
+          git clone --bare https://github.com/Ko8a/kdsfidachamp.git repo.git
           cd repo.git
           git push --mirror https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/4ozyCoder/KDSA2026.git
