@@ -1,4 +1,5 @@
 "use client";
+import { useLang } from "@/lib/i18n";
 
 const attractions = [
   {
@@ -46,6 +47,11 @@ const attractions = [
 ];
 
 export default function Attractions() {
+  const { t } = useLang();
+
+  const PHOTOS = ["/place-baiterek.jpg","/place-khanshatyr.jpg","/place-nuralem.jpg","/place-pyramid.jpg","/place-museum.jpg"];
+  const places = t.attractions.places.map((p, i) => ({ ...p, photo: PHOTOS[i] }));
+
   return (
     <section
       id="astana"
@@ -100,7 +106,7 @@ export default function Attractions() {
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <div className="section-sep-center" />
           <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: "0.75rem" }}>
-            Discover Kazakhstan
+            {t.attractions.label}
           </p>
           <h2
             style={{
@@ -112,10 +118,10 @@ export default function Attractions() {
               marginBottom: "1rem",
             }}
           >
-            Discover Astana
+            {t.attractions.title}
           </h2>
           <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.6)", maxWidth: "480px", margin: "0 auto" }}>
-            Beyond the championship — explore one of the world's most extraordinary modern capitals.
+            {t.attractions.subtitle}
           </p>
         </div>
 
@@ -125,9 +131,24 @@ export default function Attractions() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "1.5rem",
+            marginBottom: "1.5rem",
+          }}
+        >
+          {places.slice(0, 3).map((a) => (
+            <AttractionCard key={a.name} attraction={a} />
+          ))}
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "1.5rem",
+            maxWidth: "860px",
+            margin: "0 auto",
           }}
           className="attractions-grid"
         >
+          {places.slice(3).map((a) => (
           {attractions.map((a) => (
             <AttractionCard key={a.name} attraction={a} />
           ))}
@@ -147,7 +168,16 @@ export default function Attractions() {
   );
 }
 
-function AttractionCard({ attraction }: { attraction: (typeof attractions)[0] }) {
+type AttractionEntry = {
+  name: string;
+  subtitle: string;
+  desc: string;
+  photo: string;
+  color?: string;
+};
+
+function AttractionCard({ attraction }: { attraction: AttractionEntry }) {
+  const color = (attraction as { color?: string }).color ?? "#6b9fd4";
   return (
     <div
       className="attraction-card"
@@ -179,7 +209,7 @@ function AttractionCard({ attraction }: { attraction: (typeof attractions)[0] })
         {/* Dark overlay so the card stays consistent with the dark section */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,31,78,0.75) 0%, rgba(13,31,78,0.15) 60%, transparent 100%)" }} />
         {/* Color accent bar at bottom */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "3px", background: attraction.color, opacity: 0.8 }} />
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "3px", background: color, opacity: 0.8 }} />
       </div>
 
       <div style={{ padding: "1.5rem" }}>
@@ -189,7 +219,7 @@ function AttractionCard({ attraction }: { attraction: (typeof attractions)[0] })
             fontWeight: 700,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: attraction.color,
+            color: color,
             marginBottom: "6px",
           }}
         >
@@ -205,4 +235,3 @@ function AttractionCard({ attraction }: { attraction: (typeof attractions)[0] })
     </div>
   );
 }
-

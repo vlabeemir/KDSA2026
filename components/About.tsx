@@ -1,6 +1,16 @@
 "use client";
+import { useLang } from "@/lib/i18n";
 
 export default function About() {
+  const { t } = useLang();
+
+  const aboutFeatures = [
+    { icon: "🏆", title: t.about.f1title, desc: t.about.f1desc },
+    { icon: "🚁", title: t.about.f2title, desc: t.about.f2desc },
+    { icon: "🌍", title: t.about.f3title, desc: t.about.f3desc },
+    { icon: "🤝", title: t.about.f4title, desc: t.about.f4desc },
+  ];
+
   return (
     <section
       id="about"
@@ -40,7 +50,7 @@ export default function About() {
           <div>
             <div className="section-sep" />
             <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b9fd4", marginBottom: "0.75rem" }}>
-              About the Event
+              {t.about.label}
             </p>
             <h2
               style={{
@@ -52,30 +62,26 @@ export default function About() {
                 marginBottom: "1.5rem",
               }}
             >
-              Where Technology
-              <br />Meets Sport
+              {t.about.title1}
+              <br />{t.about.title2}
             </h2>
             <p style={{ fontSize: "1.05rem", color: "#3a5080", lineHeight: 1.8, marginBottom: "1.25rem" }}>
-              The Astana FIDA Drone Soccer Championship 2026 is an official international
-              competition held in the capital of Kazakhstan under the rules and standards
-              of the Federation of International Drone Soccer Association (FIDA).
+              {t.about.p1}
             </p>
             <p style={{ fontSize: "1.05rem", color: "#3a5080", lineHeight: 1.8, marginBottom: "2rem" }}>
-              Uniting national teams and clubs from around the world, the championship
-              showcases drone engineering excellence, athletic strategy, and the spirit
-              of international sportsmanship — all set against the iconic skyline of Astana.
+              {t.about.p2}
             </p>
 
             {/* Key facts */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
               {[
-                { num: "Jun 1", label: "Championship Day" },
-                { num: "FIDA", label: "Official Standards" },
-                { num: "INT'L", label: "Participation" },
-                { num: "2026", label: "Edition" },
+                { num: "Jun 1", label: t.about.stat1label },
+                { num: "FIDA", label: t.about.stat2label },
+                { num: "INT'L", label: t.about.stat3label },
+                { num: "2026", label: t.about.stat4label },
               ].map(({ num, label }) => (
                 <div
-                  key={label}
+                  key={num}
                   style={{
                     borderLeft: "2px solid #c9a84c",
                     paddingLeft: "1rem",
@@ -96,7 +102,7 @@ export default function About() {
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             {aboutFeatures.map(({ icon, title, desc }) => (
               <div
-                key={title}
+                key={icon}
                 style={{
                   display: "flex",
                   gap: "1.25rem",
@@ -146,26 +152,3 @@ export default function About() {
     </section>
   );
 }
-
-const aboutFeatures = [
-  {
-    icon: "🏆",
-    title: "International Competition",
-    desc: "National teams and clubs from across the globe compete under unified FIDA rules.",
-  },
-  {
-    icon: "🚁",
-    title: "FIDA-Certified Balls Only",
-    desc: "All participating drones must be FIDA-approved official drone soccer balls.",
-  },
-  {
-    icon: "🌍",
-    title: "Sports & Culture",
-    desc: "A full cultural program for international guests — experience Kazakhstan beyond the game.",
-  },
-  {
-    icon: "🤝",
-    title: "Industry Networking",
-    desc: "Connect with drone sports professionals, educators, and innovators from around the world.",
-  },
-];

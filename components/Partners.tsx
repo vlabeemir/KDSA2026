@@ -1,6 +1,9 @@
 "use client";
+import { useLang } from "@/lib/i18n";
 
 export default function Partners() {
+  const { t } = useLang();
+
   return (
     <section
       id="partners"
@@ -16,7 +19,7 @@ export default function Partners() {
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <div className="section-sep-center" />
           <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b9fd4", marginBottom: "0.75rem" }}>
-            Official Support
+            {t.partners.label}
           </p>
           <h2
             style={{
@@ -28,10 +31,10 @@ export default function Partners() {
               marginBottom: "1rem",
             }}
           >
-            Organizers & Partners
+            {t.partners.title}
           </h2>
           <p style={{ fontSize: "1rem", color: "#6b7a99", maxWidth: "480px", margin: "0 auto" }}>
-            The championship is organized by Kazakhstan Drone Soccer (KDS) in official partnership with FIDA.
+            {t.partners.subtitle}
           </p>
         </div>
 
@@ -61,7 +64,7 @@ export default function Partners() {
                 marginBottom: "-0.5rem",
               }}
             >
-              Organizer
+              {t.partners.organizer}
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/kds-logo-full.png" alt="Kazakhstan Drone Soccer" style={{ height: "80px", width: "auto", objectFit: "contain" }} />
@@ -100,7 +103,7 @@ export default function Partners() {
                 marginBottom: "-0.5rem",
               }}
             >
-              International Partner
+              {t.partners.intlPartner}
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/fida-logo.png" alt="FIDA" style={{ height: "80px", width: "auto", objectFit: "contain" }} />
@@ -131,7 +134,7 @@ export default function Partners() {
               marginBottom: "1.5rem",
             }}
           >
-            Supported By
+            {t.partners.supporters}
           </p>
           <div
             style={{
@@ -187,14 +190,14 @@ export default function Partners() {
         >
           <div>
             <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#8299b8", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "4px" }}>
-              Partnership Opportunities
+              {t.partners.becomePartner}
             </div>
             <div style={{ fontSize: "1.05rem", fontWeight: 800, color: "#0d1f4e" }}>
-              Interested in becoming a partner or sponsor?
+              {t.partners.becomePartnerDesc}
             </div>
           </div>
           <a href="#contact" className="btn-navy">
-            Contact Organizers
+            {t.partners.contactUs}
           </a>
         </div>
       </div>

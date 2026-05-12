@@ -1,19 +1,18 @@
 "use client";
+import { useLang } from "@/lib/i18n";
+import { openRegistrationModal } from "./RegistrationModal";
 
-const highlights = [
-  {
-    icon: (
+export default function Highlights() {
+  const { t } = useLang();
+
+  const ICONS = [
+    (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M16 3L19.5 11.5H28L21.5 16.5L24 25L16 20L8 25L10.5 16.5L4 11.5H12.5L16 3Z"
           stroke="#c9a84c" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
       </svg>
     ),
-    title: "National Team Championship",
-    desc: "Countries compete head-to-head for the national drone soccer title under FIDA's official bracket format.",
-    tag: "FIDA Sanctioned",
-  },
-  {
-    icon: (
+    (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="12" stroke="#6b9fd4" strokeWidth="1.5" fill="none" />
         <ellipse cx="16" cy="16" rx="12" ry="5" stroke="#6b9fd4" strokeWidth="1" fill="none" />
@@ -21,12 +20,7 @@ const highlights = [
         <circle cx="16" cy="16" r="2.5" fill="#c9a84c" />
       </svg>
     ),
-    title: "Club Championship",
-    desc: "Club teams battle it out in two weight categories: Class 40 and Class 20, open to clubs worldwide.",
-    tag: "Class 40 & Class 20",
-  },
-  {
-    icon: (
+    (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <rect x="4" y="18" width="24" height="10" rx="2" stroke="#6b9fd4" strokeWidth="1.5" fill="none" />
         <path d="M10 18V12C10 9.8 11.8 8 14 8H18C20.2 8 22 9.8 22 12V18" stroke="#6b9fd4" strokeWidth="1.5" fill="none" />
@@ -34,23 +28,13 @@ const highlights = [
         <circle cx="16" cy="3" r="1.5" fill="#c9a84c" />
       </svg>
     ),
-    title: "Youth Demonstration",
-    desc: "Young pilots take to the field in exhibition matches, showcasing the next generation of drone soccer talent.",
-    tag: "Youth Division",
-  },
-  {
-    icon: (
+    (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M16 4L20 12H28L22 17L24.5 25L16 20L7.5 25L10 17L4 12H12L16 4Z"
           stroke="#c9a84c" strokeWidth="1.5" fill="rgba(201,168,76,0.1)" strokeLinejoin="round" />
       </svg>
     ),
-    title: "Opening & Closing Ceremony",
-    desc: "A grand ceremonial experience with cultural performances, representing Kazakhstan's heritage and ambition.",
-    tag: "June 1",
-  },
-  {
-    icon: (
+    (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <rect x="4" y="8" width="24" height="16" rx="3" stroke="#6b9fd4" strokeWidth="1.5" fill="none" />
         <circle cx="16" cy="16" r="4" stroke="#c9a84c" strokeWidth="1.5" fill="none" />
@@ -58,12 +42,7 @@ const highlights = [
         <line x1="16" y1="24" x2="16" y2="28" stroke="#6b9fd4" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
-    title: "Public Experience Zone",
-    desc: "Visitors can get hands-on with drone soccer — try flying, watch demos, and meet the teams up close.",
-    tag: "Open to Public",
-  },
-  {
-    icon: (
+    (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <circle cx="10" cy="12" r="4" stroke="#6b9fd4" strokeWidth="1.5" fill="none" />
         <circle cx="22" cy="12" r="4" stroke="#6b9fd4" strokeWidth="1.5" fill="none" />
@@ -72,13 +51,9 @@ const highlights = [
         <path d="M14 28C14 25.2 14.9 22.7 16 22.7C17.1 22.7 18 25.2 18 28" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
-    title: "Industry Networking",
-    desc: "Connect with drone sports federation members, engineers, coaches and sponsors from across the globe.",
-    tag: "All Stakeholders",
-  },
-];
+  ];
+  const highlights = t.highlights.items.map((item, i) => ({ ...item, icon: ICONS[i] }));
 
-export default function Highlights() {
   return (
     <section
       id="highlights"
@@ -122,7 +97,7 @@ export default function Highlights() {
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <div className="section-sep-center" />
           <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b9fd4", marginBottom: "0.75rem" }}>
-            Competition Highlights
+            {t.highlights.label}
           </p>
           <h2
             style={{
@@ -134,10 +109,10 @@ export default function Highlights() {
               marginBottom: "1rem",
             }}
           >
-            What&apos;s On
+            {t.highlights.title}
           </h2>
           <p style={{ fontSize: "1rem", color: "#6b7a99", maxWidth: "480px", margin: "0 auto" }}>
-            From intense championship matches to public exhibitions — a full spectrum of drone soccer action.
+            {t.highlights.subtitle}
           </p>
         </div>
 
@@ -218,20 +193,19 @@ export default function Highlights() {
         >
           <div>
             <div style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600, marginBottom: "4px" }}>
-              Don&apos;t miss out
+              {t.highlights.cta}
             </div>
             <div style={{ color: "#fff", fontSize: "1.15rem", fontWeight: 800, letterSpacing: "-0.01em" }}>
-              Secure your spot at the championship
+              {t.highlights.ctaTitle}
             </div>
           </div>
-          <a
-            href="https://forms.gle/eVFWM75XRVicQgrj6"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={openRegistrationModal}
             className="btn-gold"
+            style={{ cursor: "pointer" }}
           >
-            Register Now →
-          </a>
+            {t.highlights.register}
+          </button>
         </div>
       </div>
 

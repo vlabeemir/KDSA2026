@@ -1,6 +1,9 @@
 "use client";
+import { useLang } from "@/lib/i18n";
 
 export default function Venue() {
+  const { t } = useLang();
+
   return (
     <section
       id="venue"
@@ -16,7 +19,7 @@ export default function Venue() {
         <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
           <div className="section-sep-center" />
           <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b9fd4", marginBottom: "0.75rem" }}>
-            Location
+            {t.venue.label}
           </p>
           <h2
             style={{
@@ -28,10 +31,10 @@ export default function Venue() {
               marginBottom: "1rem",
             }}
           >
-            Venue
+            {t.venue.title}
           </h2>
           <p style={{ fontSize: "1rem", color: "#6b7a99", maxWidth: "460px", margin: "0 auto" }}>
-            The championship takes place in Astana, the modern capital of Kazakhstan.
+            {t.venue.subtitle}
           </p>
         </div>
 
@@ -97,7 +100,7 @@ export default function Venue() {
                     animation: "blink 2s ease-in-out infinite",
                   }}
                 />
-                Venue — Coming Soon
+                {t.venue.comingSoon}
               </div>
             </div>
           </div>
@@ -113,14 +116,16 @@ export default function Venue() {
                 marginBottom: "1rem",
               }}
             >
-              Astana, Kazakhstan
+              {t.venue.cityTitle}
             </h3>
             <p style={{ fontSize: "0.95rem", color: "#3a5080", lineHeight: 1.8, marginBottom: "2rem" }}>
-              The exact competition venue in Astana will be confirmed and announced shortly.
-              Follow our official channels for the latest updates on the championship location.
+              {t.venue.desc}
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
+              {t.venue.details.map(({ label, value }, i) => {
+                const icons = ["🏙️", "🌍", "📅", "📍"];
+                return (
               {[
                 { icon: "🏙️", label: "City", value: "Astana" },
                 { icon: "🌍", label: "Country", value: "Republic of Kazakhstan" },
@@ -139,7 +144,7 @@ export default function Venue() {
                     border: "1px solid rgba(107,159,212,0.15)",
                   }}
                 >
-                  <span style={{ fontSize: "1.1rem", width: "24px", textAlign: "center" }}>{icon}</span>
+                  <span style={{ fontSize: "1.1rem", width: "24px", textAlign: "center" }}>{icons[i]}</span>
                   <div>
                     <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "#8299b8", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                       {label}
@@ -149,11 +154,12 @@ export default function Venue() {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             <p style={{ fontSize: "0.8rem", color: "#8299b8", lineHeight: 1.7, borderLeft: "2px solid rgba(107,159,212,0.3)", paddingLeft: "1rem" }}>
-              The venue will be updated on this page once confirmed. An interactive map will be embedded here for easy navigation.
+              {t.venue.mapNote}
             </p>
           </div>
         </div>

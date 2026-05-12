@@ -1,6 +1,10 @@
 "use client";
+import { openRegistrationModal } from "./RegistrationModal";
+import { useLang } from "@/lib/i18n";
 
 export default function CTA() {
+  const { t } = useLang();
+
   return (
     <section
       id="contact"
@@ -95,7 +99,7 @@ export default function CTA() {
               }}
             >
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#c9a84c", display: "inline-block" }} />
-              Registrations Open
+              {t.cta.badge}
             </span>
           </div>
 
@@ -109,7 +113,7 @@ export default function CTA() {
               marginBottom: "1.25rem",
             }}
           >
-            Ready to Compete?
+            {t.cta.title}
           </h2>
           <p
             style={{
@@ -120,24 +124,21 @@ export default function CTA() {
               lineHeight: 1.75,
             }}
           >
-            Register your team for the Astana FIDA Drone Soccer Championship 2026 and be part of
-            history. Spots are limited — don&apos;t miss your chance to compete in Astana.
+            {t.cta.subtitle}
           </p>
 
           {/* Buttons */}
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "3rem" }}>
-            <a
-              href="https://forms.gle/eVFWM75XRVicQgrj6"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={openRegistrationModal}
               className="btn-gold"
-              style={{ fontSize: "0.85rem", padding: "16px 32px" }}
+              style={{ fontSize: "0.85rem", padding: "16px 32px", cursor: "pointer" }}
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M9 1L16 9L9 17M1 9H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Register Your Team
-            </a>
+              {t.cta.register}
+            </button>
             <a
               href="mailto:info@dronesoccer.kz"
               style={{
@@ -157,7 +158,7 @@ export default function CTA() {
                 transition: "all 0.3s ease",
               }}
             >
-              Contact Organizers
+              {t.cta.contact}
             </a>
           </div>
 
@@ -180,7 +181,7 @@ export default function CTA() {
                     <path d="M3 3h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3zM3 7h12" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" strokeLinecap="round" />
                   </svg>
                 ),
-                label: "Email",
+                label: t.cta.emailLabel,
                 value: "info@dronesoccer.kz",
                 href: "mailto:info@dronesoccer.kz",
               },
@@ -191,7 +192,7 @@ export default function CTA() {
                     <path d="M9 2v7l4 2" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" strokeLinecap="round" />
                   </svg>
                 ),
-                label: "Website",
+                label: t.cta.websiteLabel,
                 value: "dronesoccer.kz",
                 href: "https://dronesoccer.kz",
               },
@@ -202,13 +203,13 @@ export default function CTA() {
                     <circle cx="9" cy="7.5" r="1.5" fill="rgba(255,255,255,0.5)" />
                   </svg>
                 ),
-                label: "Location",
-                value: "Astana, Kazakhstan",
+                label: t.cta.locationLabel,
+                value: t.cta.locationValue,
                 href: "#venue",
               },
             ].map(({ icon, label, value, href }) => (
               <a
-                key={label}
+                key={href}
                 href={href}
                 style={{
                   display: "flex",
@@ -244,7 +245,7 @@ export default function CTA() {
           }}
         >
           <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#8299b8", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Follow Updates
+            {t.cta.follow}
           </span>
           {[
             {

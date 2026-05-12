@@ -1,49 +1,18 @@
 "use client";
-
-const hotels = [
-  {
-    name: "The Ritz-Carlton Astana",
-    category: "Ultra Luxury",
-    desc: "Iconic 5-star property at the heart of Astana's financial district, offering unparalleled service and panoramic city views.",
-    amenities: ["🍽️ Fine Dining", "🏊 Pool", "💆 Spa", "🅿️ Parking", "💼 Business Center"],
-    stars: 5,
-    photo: "/hotel-ritz.jpg",
-  },
-  {
-    name: "The St. Regis Astana",
-    category: "Luxury",
-    desc: "Sophisticated elegance in the Nurly Tau business complex, featuring butler service and world-class facilities.",
-    amenities: ["🍽️ Restaurant", "🏋️ Fitness", "💆 Spa", "🍸 Bar", "🚖 Concierge"],
-    stars: 5,
-    photo: "/hotel-stregis.jpg",
-  },
-  {
-    name: "Sheraton Astana Hotel",
-    category: "Upscale",
-    desc: "A modern international hotel offering comfort and connectivity, ideally positioned near major attractions.",
-    amenities: ["🍽️ Restaurant", "🏊 Pool", "🏋️ Gym", "🛜 High-speed WiFi", "🅿️ Parking"],
-    stars: 5,
-    photo: "/hotel-sheraton.jpg",
-  },
-  {
-    name: "Hilton Astana",
-    category: "Upscale",
-    desc: "Contemporary design meets Kazakh hospitality at the Hilton, steps from Astana's famous riverside promenade.",
-    amenities: ["🍽️ Dining", "🏋️ Fitness Center", "💼 Business Lounge", "🛜 WiFi", "🎭 Events"],
-    stars: 5,
-    photo: "/hotel-hilton.webp",
-  },
-  {
-    name: "Wyndham Garden Astana",
-    category: "Premium",
-    desc: "A comfortable and well-appointed hotel providing excellent value with easy access to the city's key destinations.",
-    amenities: ["🍽️ Restaurant", "🏋️ Gym", "🛜 WiFi", "🅿️ Parking", "🌿 Garden"],
-    stars: 4,
-    photo: "/hotel-wyndham.webp",
-  },
-];
+import { useLang } from "@/lib/i18n";
 
 export default function Hotels() {
+  const { t } = useLang();
+
+  const HOTEL_STATIC = [
+    { stars: 5, photo: "/hotel-ritz.jpg", amenities: ["🍽️ Fine Dining","🏊 Pool","💆 Spa","🅿️ Parking","💼 Business Center"] },
+    { stars: 5, photo: "/hotel-stregis.jpg", amenities: ["🍽️ Restaurant","🏋️ Fitness","💆 Spa","🍸 Bar","🚖 Concierge"] },
+    { stars: 5, photo: "/hotel-sheraton.jpg", amenities: ["🍽️ Restaurant","🏊 Pool","🏋️ Gym","🛜 High-speed WiFi","🅿️ Parking"] },
+    { stars: 5, photo: "/hotel-hilton.webp", amenities: ["🍽️ Dining","🏋️ Fitness Center","💼 Business Lounge","🛜 WiFi","🎭 Events"] },
+    { stars: 4, photo: "/hotel-wyndham.webp", amenities: ["🍽️ Restaurant","🏋️ Gym","🛜 WiFi","🅿️ Parking","🌿 Garden"] },
+  ];
+  const hotels = t.hotels.hotels.map((h, i) => ({ ...h, ...HOTEL_STATIC[i] }));
+
   return (
     <section
       id="hotels"
@@ -70,7 +39,7 @@ export default function Hotels() {
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <div className="section-sep-center" />
           <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b9fd4", marginBottom: "0.75rem" }}>
-            Accommodation
+            {t.hotels.label}
           </p>
           <h2
             style={{
@@ -82,10 +51,10 @@ export default function Hotels() {
               marginBottom: "1rem",
             }}
           >
-            Recommended Hotels
+            {t.hotels.title}
           </h2>
           <p style={{ fontSize: "1rem", color: "#6b7a99", maxWidth: "480px", margin: "0 auto" }}>
-            Astana offers world-class accommodation. These hotels are recommended for championship participants and guests.
+            {t.hotels.subtitle}
           </p>
         </div>
 
@@ -99,7 +68,7 @@ export default function Hotels() {
           }}
         >
           {hotels.slice(0, 3).map((hotel) => (
-            <HotelCard key={hotel.name} hotel={hotel} />
+            <HotelCard key={hotel.name} hotel={hotel} t={t} />
           ))}
         </div>
         <div
@@ -112,7 +81,7 @@ export default function Hotels() {
           }}
         >
           {hotels.slice(3).map((hotel) => (
-            <HotelCard key={hotel.name} hotel={hotel} />
+            <HotelCard key={hotel.name} hotel={hotel} t={t} />
           ))}
         </div>
 
@@ -126,8 +95,7 @@ export default function Hotels() {
             fontStyle: "italic",
           }}
         >
-          Accommodation is at participants&apos; own expense. KDS does not have preferential rates with listed hotels.
-          Book early to secure availability during the championship period.
+          {t.hotels.disclaimer}
         </p>
       </div>
 
@@ -145,7 +113,18 @@ export default function Hotels() {
   );
 }
 
-function HotelCard({ hotel }: { hotel: (typeof hotels)[0] }) {
+import { Translations } from "@/lib/i18n";
+
+type HotelEntry = {
+  name: string;
+  category: string;
+  desc: string;
+  stars: number;
+  photo: string;
+  amenities: string[];
+};
+
+function HotelCard({ hotel, t }: { hotel: HotelEntry; t: Translations }) {
   return (
     <div className="hotel-card">
       {/* Top color bar */}
@@ -261,7 +240,7 @@ function HotelCard({ hotel }: { hotel: (typeof hotels)[0] }) {
             transition: "color 0.3s ease, border-color 0.3s ease",
           }}
         >
-          View Hotel
+          {t.hotels.viewHotel}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M2 6H10M6 2L10 6L6 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -270,4 +249,3 @@ function HotelCard({ hotel }: { hotel: (typeof hotels)[0] }) {
     </div>
   );
 }
-

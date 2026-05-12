@@ -1,19 +1,28 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useLang } from "@/lib/i18n";
+import { openRegistrationModal } from "./RegistrationModal";
 
-const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Program", href: "#program" },
-  { label: "Venue", href: "#venue" },
-  { label: "Hotels", href: "#hotels" },
-  { label: "Astana", href: "#astana" },
-  { label: "Partners", href: "#partners" },
-  { label: "Contact", href: "#contact" },
+const navHrefs = [
+  { key: "about" as const, href: "#about" },
+  { key: "program" as const, href: "#program" },
+  { key: "venue" as const, href: "#venue" },
+  { key: "hotels" as const, href: "#hotels" },
+  { key: "astana" as const, href: "#astana" },
+  { key: "partners" as const, href: "#partners" },
+  { key: "contact" as const, href: "#contact" },
+];
+
+const langOptions: { code: "en" | "ru" | "kk"; label: string }[] = [
+  { code: "en", label: "EN" },
+  { code: "ru", label: "RU" },
+  { code: "kk", label: "KZ" },
 ];
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, setLang, t } = useLang();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -21,11 +30,38 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const LanguageSwitcher = () => (
+    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      {langOptions.map((opt, idx) => (
+        <span key={opt.code} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          {idx > 0 && (
+            <span style={{ color: "#8299b8", fontSize: "0.7rem", userSelect: "none" }}>|</span>
+          )}
+          <button
+            onClick={() => setLang(opt.code)}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: "0.7rem",
+              fontWeight: lang === opt.code ? 800 : 700,
+              color: lang === opt.code ? "#0d1f4e" : "#8299b8",
+              letterSpacing: "0.1em",
+              cursor: "pointer",
+              padding: "4px 2px",
+            }}
+          >
+            {opt.label}
+          </button>
+        </span>
+      ))}
+    </div>
+  );
+
   return (
     <header
       style={{
         position: "fixed",
-        top: 0,
+        top: 44,
         left: 0,
         right: 0,
         zIndex: 100,
@@ -59,20 +95,19 @@ export default function Header() {
 
         {/* Desktop nav */}
         <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }} className="hidden-mobile">
-          {navItems.map((item) => (
+          {navHrefs.map((item) => (
             <a key={item.href} href={item.href} className="nav-link">
-              {item.label}
+              {t.nav[item.key]}
             </a>
           ))}
-          <a
-            href="https://forms.gle/eVFWM75XRVicQgrj6"
-            target="_blank"
-            rel="noopener noreferrer"
+          <LanguageSwitcher />
+          <button
+            onClick={openRegistrationModal}
             className="btn-gold"
-            style={{ padding: "8px 18px", fontSize: "0.7rem" }}
+            style={{ padding: "8px 18px", fontSize: "0.7rem", cursor: "pointer" }}
           >
-            Register Now
-          </a>
+            {t.nav.register}
+          </button>
         </nav>
 
         {/* Mobile hamburger */}
@@ -126,7 +161,7 @@ export default function Header() {
             gap: "1.25rem",
           }}
         >
-          {navItems.map((item) => (
+          {navHrefs.map((item) => (
             <a
               key={item.href}
               href={item.href}
@@ -134,18 +169,17 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
               style={{ fontSize: "0.85rem" }}
             >
-              {item.label}
+              {t.nav[item.key]}
             </a>
           ))}
-          <a
-            href="https://forms.gle/eVFWM75XRVicQgrj6"
-            target="_blank"
-            rel="noopener noreferrer"
+          <LanguageSwitcher />
+          <button
+            onClick={() => { setMenuOpen(false); openRegistrationModal(); }}
             className="btn-gold"
-            style={{ alignSelf: "flex-start" }}
+            style={{ alignSelf: "flex-start", cursor: "pointer" }}
           >
-            Register Now
-          </a>
+            {t.nav.register}
+          </button>
         </div>
       )}
 
@@ -161,4 +195,3 @@ export default function Header() {
     </header>
   );
 }
-

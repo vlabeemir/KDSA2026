@@ -1,6 +1,9 @@
 "use client";
+import { useLang } from "@/lib/i18n";
+import { openRegistrationModal } from "./RegistrationModal";
 
 export default function Footer() {
+  const { t } = useLang();
   const year = new Date().getFullYear();
 
   return (
@@ -66,8 +69,7 @@ export default function Footer() {
               />
             </div>
             <p style={{ fontSize: "0.83rem", lineHeight: 1.75, color: "rgba(255,255,255,0.45)", maxWidth: "280px", marginBottom: "1.5rem" }}>
-              Astana FIDA Drone Soccer Championship 2026 — an international competition
-              in drone soccer, organized by Kazakhstan Drone Soccer under FIDA standards.
+              {t.footer.desc}
             </p>
             <div style={{ display: "flex", gap: "10px" }}>
               {[
@@ -98,16 +100,9 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginBottom: "1.25rem" }}>
-              Navigation
+              {t.footer.navTitle}
             </div>
-            {[
-              { label: "About the Event", href: "#about" },
-              { label: "Event Program", href: "#program" },
-              { label: "Competition", href: "#highlights" },
-              { label: "Venue", href: "#venue" },
-              { label: "Hotels", href: "#hotels" },
-              { label: "Discover Astana", href: "#astana" },
-            ].map(({ label, href }) => (
+            {t.footer.navLinks.map(({ label, href }) => (
               <a
                 key={href}
                 href={href}
@@ -128,19 +123,19 @@ export default function Footer() {
           {/* Organizers */}
           <div>
             <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginBottom: "1.25rem" }}>
-              Organizers
+              {t.footer.organizersTitle}
             </div>
             <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.65)", fontWeight: 700, marginBottom: "4px" }}>
               Kazakhstan Drone Soccer
             </div>
             <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.4)", marginBottom: "1.25rem" }}>
-              Official Organizer
+              {t.footer.officialOrg}
             </div>
             <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.65)", fontWeight: 700, marginBottom: "4px" }}>
               FIDA
             </div>
             <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.4)", marginBottom: "1.5rem" }}>
-              International Partner
+              {t.footer.intlPartner}
             </div>
             <a
               href="https://dronesoccer.kz"
@@ -164,7 +159,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.15em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginBottom: "1.25rem" }}>
-              Contact
+              {t.footer.contactTitle}
             </div>
             {[
               { label: "Email", value: "info@dronesoccer.kz", href: "mailto:info@dronesoccer.kz" },
@@ -186,15 +181,13 @@ export default function Footer() {
             ))}
 
             <div style={{ marginTop: "1.25rem" }}>
-              <a
-                href="https://forms.gle/eVFWM75XRVicQgrj6"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={openRegistrationModal}
                 className="btn-gold"
-                style={{ padding: "10px 18px", fontSize: "0.7rem" }}
+                style={{ padding: "10px 18px", fontSize: "0.7rem", cursor: "pointer" }}
               >
-                Register →
-              </a>
+                {t.footer.register}
+              </button>
             </div>
           </div>
         </div>
@@ -212,7 +205,7 @@ export default function Footer() {
           }}
         >
           <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.3)" }}>
-            © {year} Kazakhstan Drone Soccer. All rights reserved.
+            © {year} Kazakhstan Drone Soccer. {t.footer.rights}
           </div>
           <div
             style={{
@@ -223,7 +216,7 @@ export default function Footer() {
               color: "rgba(255,255,255,0.25)",
             }}
           >
-            <span>This competition uses only FIDA-approved official balls and rules.</span>
+            <span>{t.footer.fidaNote}</span>
           </div>
         </div>
       </div>
@@ -239,4 +232,3 @@ export default function Footer() {
     </footer>
   );
 }
-
