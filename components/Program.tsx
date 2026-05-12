@@ -1,241 +1,636 @@
 "use client";
-import { useLang } from "@/lib/i18n";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-export default function Program() {
-  const { t } = useLang();
+export type Lang = "en" | "ru" | "kk";
 
-  const COLORS = ["#6b9fd4", "#6b9fd4", "#6b9fd4", "#c9a84c", "#6b9fd4"];
-  const FEATURED = [false, false, false, true, false];
-  const days = t.program.days.map((d, i) => ({ ...d, color: COLORS[i], featured: FEATURED[i] }));
+const translations = {
+  en: {
+    nav: {
+      about: "About",
+      program: "Program",
+      venue: "Venue",
+      hotels: "Hotels",
+      astana: "Astana",
+      partners: "Partners",
+      contact: "Contact",
+      register: "Register Now",
+    },
+    hero: {
+      badge: "Official FIDA Event · June 1, 2026",
+      title1: "Astana FIDA",
+      title2: "Drone Soccer",
+      title3: "Championship 2026",
+      subtitle: "International drone soccer tournament under FIDA rules — where sport, technology and Kazakh culture meet in the heart of Astana.",
+      date: "June 1, 2026",
+      location: "Astana, Kazakhstan",
+      intl: "International Competition",
+      register: "Register Now",
+      program: "Event Program",
+      contact: "Contact Organizers",
+      scroll: "Scroll",
+    },
+    about: {
+      label: "About the Event",
+      title1: "Where Technology",
+      title2: "Meets Sport",
+      p1: "The Astana FIDA Drone Soccer Championship 2026 is an official international competition held in the capital of Kazakhstan under the rules and standards of the Federation of International Drone Soccer Association (FIDA).",
+      p2: "Uniting national teams and clubs from around the world, the championship showcases drone engineering excellence, athletic strategy, and the spirit of international sportsmanship — all set against the iconic skyline of Astana.",
+      stat1label: "Championship Day",
+      stat2label: "Official Standards",
+      stat3label: "Participation",
+      stat4label: "Edition",
+      f1title: "International Competition",
+      f1desc: "National teams and clubs from across the globe compete under unified FIDA rules.",
+      f2title: "FIDA-Certified Balls Only",
+      f2desc: "All participating drones must be FIDA-approved official drone soccer balls.",
+      f3title: "Sports & Culture",
+      f3desc: "A full cultural program for international guests — experience Kazakhstan beyond the game.",
+      f4title: "Industry Networking",
+      f4desc: "Connect with drone sports professionals, educators, and innovators from around the world.",
+    },
+    program: {
+      label: "Event Schedule",
+      title: "Event Program",
+      subtitle: "Five days of competition, culture, and connection — May 29 to June 2, 2026.",
+      note: "This competition must use only FIDA-approved official balls and FIDA rules.",
+      mainDay: "★ Main Day",
+      days: [
+        {
+          date: "May 29", day: "Friday", label: "Day 0", title: "Arrival & Check-in",
+          items: ["Arrival of international delegations", "Hotel check-in and accreditation", "Welcome reception & briefing"],
+        },
+        {
+          date: "May 30", day: "Saturday", label: "Day 1", title: "Training Day",
+          items: ["Train of Trainers — workshop for local coaches", "Cultural program for international guests", "Astana city tour", "Technical inspection of equipment"],
+        },
+        {
+          date: "May 31", day: "Sunday", label: "Day 2", title: "Practice & Qualifications",
+          items: ["Morning: Free practice sessions", "Afternoon: Qualification rounds", "Evening: Team dinner & networking"],
+        },
+        {
+          date: "June 1", day: "Monday", label: "Main Day", title: "Championship Day",
+          items: ["Opening Ceremony", "National Team Championship matches", "Club Championship — Class 40 & Class 20", "Youth Demonstration Matches", "Public Experience Zone", "Award & Closing Ceremony"],
+        },
+        {
+          date: "June 2", day: "Tuesday", label: "Day 4", title: "Departure Day",
+          items: ["Cultural program for international guests", "Farewell breakfast", "Checkout & departure of delegations"],
+        },
+      ],
+    },
+    highlights: {
+      label: "Competition Highlights",
+      title: "What's On",
+      subtitle: "From intense championship matches to public exhibitions — a full spectrum of drone soccer action.",
+      cta: "Don't miss out",
+      ctaTitle: "Secure your spot at the championship",
+      register: "Register Now →",
+      items: [
+        { title: "National Team Championship", desc: "Countries compete head-to-head for the national drone soccer title under FIDA's official bracket format.", tag: "FIDA Sanctioned" },
+        { title: "Club Championship", desc: "Club teams battle it out in two weight categories: Class 40 and Class 20, open to clubs worldwide.", tag: "Class 40 & Class 20" },
+        { title: "Youth Demonstration", desc: "Young pilots take to the field in exhibition matches, showcasing the next generation of drone soccer talent.", tag: "Youth Division" },
+        { title: "Opening & Closing Ceremony", desc: "A grand ceremonial experience with cultural performances, representing Kazakhstan's heritage and ambition.", tag: "June 1" },
+        { title: "Public Experience Zone", desc: "Visitors can get hands-on with drone soccer — try flying, watch demos, and meet the teams up close.", tag: "Open to Public" },
+        { title: "Industry Networking", desc: "Connect with drone sports federation members, engineers, coaches and sponsors from across the globe.", tag: "All Stakeholders" },
+      ],
+    },
+    venue: {
+      label: "Location",
+      title: "Venue",
+      subtitle: "The championship takes place in Astana, the modern capital of Kazakhstan.",
+      comingSoon: "Venue — Coming Soon",
+      cityTitle: "Astana, Kazakhstan",
+      desc: "The exact competition venue in Astana will be confirmed and announced shortly. Follow our official channels for the latest updates on the championship location.",
+      mapNote: "The venue will be updated on this page once confirmed. An interactive map will be embedded here for easy navigation.",
+      details: [
+        { label: "City", value: "Astana (Nur-Sultan)" },
+        { label: "Country", value: "Republic of Kazakhstan" },
+        { label: "Date", value: "June 1, 2026" },
+        { label: "Venue", value: "To be announced" },
+      ],
+    },
+    hotels: {
+      label: "Accommodation",
+      title: "Recommended Hotels",
+      subtitle: "Astana offers world-class accommodation. These hotels are recommended for championship participants and guests.",
+      disclaimer: "Accommodation is at participants' own expense. KDS does not have preferential rates with listed hotels. Book early to secure availability during the championship period.",
+      viewHotel: "View Hotel",
+      hotels: [
+        { name: "The Ritz-Carlton Astana", category: "Ultra Luxury", desc: "Iconic 5-star property at the heart of Astana's financial district, offering unparalleled service and panoramic city views." },
+        { name: "The St. Regis Astana", category: "Luxury", desc: "Sophisticated elegance in the Nurly Tau business complex, featuring butler service and world-class facilities." },
+        { name: "Sheraton Astana Hotel", category: "Upscale", desc: "A modern international hotel offering comfort and connectivity, ideally positioned near major attractions." },
+        { name: "Hilton Astana", category: "Upscale", desc: "Contemporary design meets Kazakh hospitality at the Hilton, steps from Astana's famous riverside promenade." },
+        { name: "Wyndham Garden Astana", category: "Premium", desc: "A comfortable and well-appointed hotel providing excellent value with easy access to the city's key destinations." },
+      ],
+    },
+    attractions: {
+      label: "Discover Astana",
+      title: "The City Awaits",
+      subtitle: "Beyond the championship, Astana offers a world of architectural wonders and cultural experiences.",
+      places: [
+        { name: "Baiterek", subtitle: "Symbol of Astana", desc: "The iconic 105-meter monument tower with a golden observation sphere — the definitive symbol of modern Astana and Kazakhstan's aspirations." },
+        { name: "Khan Shatyr", subtitle: "World's Largest Tent", desc: "A monumental transparent tent structure covering 140,000 m² — housing a shopping center, beach resort, and entertainment complex." },
+        { name: "Nur Alem / EXPO", subtitle: "Sphere of Future", desc: "The world's largest spherical building, built for EXPO 2017 in Astana. Now a museum of future energy and sustainable technology." },
+        { name: "Palace of Peace & Reconciliation", subtitle: "Pyramid of Harmony", desc: "A stunning 62-meter glass pyramid by Norman Foster, hosting the Congress of World and Traditional Religions — a masterpiece of architecture." },
+        { name: "National Museum", subtitle: "Kazakhstan's Story", desc: "The largest museum in Central Asia, showcasing over 44,000 artefacts spanning Kazakhstan's history from ancient times to the present." },
+      ],
+    },
+    partners: {
+      label: "Partners & Organizers",
+      title: "Supported By",
+      subtitle: "The championship is brought to you by Kazakhstan's leading drone sports organization, in partnership with global institutions.",
+      organizer: "Official Organizer",
+      intlPartner: "International Partner",
+      supporters: "Supporters & Partners",
+      becomePartner: "Become a Partner",
+      becomePartnerDesc: "Interested in sponsoring or partnering with the Astana FIDA Drone Soccer Championship 2026?",
+      contactUs: "Contact Us →",
+    },
+    cta: {
+      badge: "Registrations Open",
+      title: "Ready to Compete?",
+      subtitle: "Register your team for the Astana FIDA Drone Soccer Championship 2026 and be part of history. Spots are limited — don't miss your chance to compete in Astana.",
+      register: "Register Your Team",
+      contact: "Contact Organizers",
+      follow: "Follow Updates",
+      emailLabel: "Email",
+      websiteLabel: "Website",
+      locationLabel: "Location",
+      locationValue: "Astana, Kazakhstan",
+    },
+    footer: {
+      desc: "Astana FIDA Drone Soccer Championship 2026 — an international competition in drone soccer, organized by Kazakhstan Drone Soccer under FIDA standards.",
+      navTitle: "Navigation",
+      navLinks: [
+        { label: "About the Event", href: "#about" },
+        { label: "Event Program", href: "#program" },
+        { label: "Competition", href: "#highlights" },
+        { label: "Venue", href: "#venue" },
+        { label: "Hotels", href: "#hotels" },
+        { label: "Discover Astana", href: "#astana" },
+      ],
+      organizersTitle: "Organizers",
+      officialOrg: "Official Organizer",
+      intlPartner: "International Partner",
+      contactTitle: "Contact",
+      register: "Register →",
+      rights: "All rights reserved.",
+      fidaNote: "This competition uses only FIDA-approved official balls and rules.",
+    },
+    registration: {
+      label: "Registration",
+      title: "Choose your category",
+      guest: "Guest",
+      guestDesc: "Attend the championship as a spectator or guest",
+      media: "Media",
+      mediaDesc: "Register as press or media representative",
+      participant: "Participant",
+      participantDesc: "Register your team to compete in the championship",
+      footer: "Astana FIDA Drone Soccer Championship · June 1, 2026",
+    },
+    countdown: {
+      label: "Team registration closes in",
+      days: "d",
+      hours: "h",
+      minutes: "m",
+      seconds: "s",
+      register: "Register Team →",
+      closed: "Team registration is closed",
+      closedSub: "Guest & Media registration still open",
+    },
+    participantClosed: "🔒 Team registration is closed. Only Guest and Media registration are available.",
+  },
+
+  ru: {
+    nav: {
+      about: "О мероприятии",
+      program: "Программа",
+      venue: "Место",
+      hotels: "Отели",
+      astana: "Астана",
+      partners: "Партнёры",
+      contact: "Контакты",
+      register: "Регистрация",
+    },
+    hero: {
+      badge: "Официальное мероприятие FIDA · 1 июня 2026",
+      title1: "Астана FIDA",
+      title2: "Дрон-Футбол",
+      title3: "Чемпионат 2026",
+      subtitle: "Международный турнир по дрон-футболу по правилам FIDA — где спорт, технологии и казахстанская культура встречаются в сердце Астаны.",
+      date: "1 июня 2026",
+      location: "Астана, Казахстан",
+      intl: "Международные соревнования",
+      register: "Зарегистрироваться",
+      program: "Программа мероприятия",
+      contact: "Связаться с организаторами",
+      scroll: "Листать",
+    },
+    about: {
+      label: "О мероприятии",
+      title1: "Там, где технологии",
+      title2: "встречают спорт",
+      p1: "Чемпионат FIDA по дрон-футболу в Астане 2026 — официальные международные соревнования, проводимые в столице Казахстана по правилам и стандартам Федерации международной ассоциации дрон-футбола (FIDA).",
+      p2: "Объединяя национальные сборные и клубы со всего мира, чемпионат демонстрирует мастерство дроностроения, спортивную стратегию и дух международного спортивного товарищества — на фоне знакового силуэта Астаны.",
+      stat1label: "День чемпионата",
+      stat2label: "Официальные стандарты",
+      stat3label: "Участие",
+      stat4label: "Год",
+      f1title: "Международные соревнования",
+      f1desc: "Национальные сборные и клубы со всего мира соревнуются по единым правилам FIDA.",
+      f2title: "Только мячи FIDA",
+      f2desc: "Все участвующие дроны должны быть официальными мячами для дрон-футбола, одобренными FIDA.",
+      f3title: "Спорт и культура",
+      f3desc: "Насыщенная культурная программа для иностранных гостей — откройте для себя Казахстан за пределами игры.",
+      f4title: "Нетворкинг в отрасли",
+      f4desc: "Познакомьтесь с профессионалами дрон-спорта, педагогами и новаторами со всего мира.",
+    },
+    program: {
+      label: "Расписание мероприятия",
+      title: "Программа",
+      subtitle: "Пять дней соревнований, культуры и общения — с 29 мая по 2 июня 2026.",
+      note: "На соревнованиях используются только официальные мячи и правила FIDA.",
+      mainDay: "★ Главный день",
+      days: [
+        {
+          date: "29 мая", day: "Пятница", label: "День 0", title: "Прибытие и заселение",
+          items: ["Прибытие международных делегаций", "Заселение в отели и аккредитация", "Приветственный приём и брифинг"],
+        },
+        {
+          date: "30 мая", day: "Суббота", label: "День 1", title: "День тренировок",
+          items: ["Тренинг тренеров — семинар для местных тренеров", "Культурная программа для иностранных гостей", "Экскурсия по Астане", "Технический осмотр оборудования"],
+        },
+        {
+          date: "31 мая", day: "Воскресенье", label: "День 2", title: "Практика и квалификация",
+          items: ["Утро: свободные тренировки", "День: квалификационные раунды", "Вечер: командный ужин и нетворкинг"],
+        },
+        {
+          date: "1 июня", day: "Понедельник", label: "Главный день", title: "День чемпионата",
+          items: ["Церемония открытия", "Матчи национального командного чемпионата", "Клубный чемпионат — Класс 40 и Класс 20", "Показательные матчи среди молодёжи", "Зона публичного опыта", "Церемония награждения и закрытия"],
+        },
+        {
+          date: "2 июня", day: "Вторник", label: "День 4", title: "День отъезда",
+          items: ["Культурная программа для иностранных гостей", "Прощальный завтрак", "Выезд и отъезд делегаций"],
+        },
+      ],
+    },
+    highlights: {
+      label: "Программа соревнований",
+      title: "Что нас ждёт",
+      subtitle: "От напряжённых матчей чемпионата до публичных выставок — весь спектр дрон-футбола.",
+      cta: "Не пропустите",
+      ctaTitle: "Занимайте своё место на чемпионате",
+      register: "Зарегистрироваться →",
+      items: [
+        { title: "Командный чемпионат", desc: "Страны соревнуются друг с другом за национальный титул по дрон-футболу по официальному формату FIDA.", tag: "Под эгидой FIDA" },
+        { title: "Клубный чемпионат", desc: "Клубные команды соревнуются в двух весовых категориях: Класс 40 и Класс 20, открыто для клубов всего мира.", tag: "Класс 40 и Класс 20" },
+        { title: "Молодёжная демонстрация", desc: "Юные пилоты выходят на поле в показательных матчах, демонстрируя следующее поколение таланта.", tag: "Молодёжный дивизион" },
+        { title: "Церемония открытия и закрытия", desc: "Торжественная церемония с культурными выступлениями, представляющими наследие и устремления Казахстана.", tag: "1 июня" },
+        { title: "Зона публичного опыта", desc: "Посетители могут попробовать дрон-футбол на практике — полетать, посмотреть демонстрации и познакомиться с командами.", tag: "Открыто для всех" },
+        { title: "Нетворкинг в отрасли", desc: "Познакомьтесь с членами федерации дрон-спорта, инженерами, тренерами и спонсорами со всего мира.", tag: "Для всех участников" },
+      ],
+    },
+    venue: {
+      label: "Место проведения",
+      title: "Место проведения",
+      subtitle: "Чемпионат проходит в Астане — современной столице Казахстана.",
+      comingSoon: "Место — скоро",
+      cityTitle: "Астана, Казахстан",
+      desc: "Точное место проведения соревнований в Астане будет подтверждено и объявлено в ближайшее время. Следите за нашими официальными каналами.",
+      mapNote: "Место будет обновлено на этой странице после подтверждения. Здесь появится интерактивная карта для удобной навигации.",
+      details: [
+        { label: "Город", value: "Астана (Нур-Султан)" },
+        { label: "Страна", value: "Республика Казахстан" },
+        { label: "Дата", value: "1 июня 2026" },
+        { label: "Место", value: "Будет объявлено" },
+      ],
+    },
+    hotels: {
+      label: "Проживание",
+      title: "Рекомендуемые отели",
+      subtitle: "Астана предлагает проживание мирового класса. Эти отели рекомендованы для участников и гостей чемпионата.",
+      disclaimer: "Проживание оплачивается участниками самостоятельно. У KDS нет льготных тарифов в перечисленных отелях. Бронируйте заранее.",
+      viewHotel: "Посмотреть отель",
+      hotels: [
+        { name: "The Ritz-Carlton Astana", category: "Ультра люкс", desc: "Знаковый 5-звёздочный отель в сердце финансового района Астаны с непревзойдённым сервисом и панорамным видом на город." },
+        { name: "The St. Regis Astana", category: "Люкс", desc: "Изысканная элегантность в деловом комплексе Нурлы Тау с услугой дворецкого и объектами мирового класса." },
+        { name: "Sheraton Astana Hotel", category: "Высокий класс", desc: "Современный международный отель с комфортом и связью, идеально расположенный рядом с главными достопримечательностями." },
+        { name: "Hilton Astana", category: "Высокий класс", desc: "Современный дизайн и казахстанское гостеприимство в Hilton, в нескольких шагах от знаменитой набережной Астаны." },
+        { name: "Wyndham Garden Astana", category: "Премиум", desc: "Комфортный и хорошо оборудованный отель с отличным соотношением цены и качества и удобным доступом к ключевым достопримечательностям." },
+      ],
+    },
+    attractions: {
+      label: "Откройте Астану",
+      title: "Город ждёт вас",
+      subtitle: "За пределами чемпионата Астана предлагает мир архитектурных чудес и культурных впечатлений.",
+      places: [
+        { name: "Байтерек", subtitle: "Символ Астаны", desc: "Знаменитая 105-метровая монументальная башня с золотой смотровой сферой — главный символ современной Астаны и устремлений Казахстана." },
+        { name: "Хан Шатыр", subtitle: "Крупнейший шатёр в мире", desc: "Монументальная прозрачная шатровая конструкция площадью 140 000 м² — торговый центр, пляжный курорт и развлекательный комплекс." },
+        { name: "Нур Алем / EXPO", subtitle: "Сфера будущего", desc: "Крупнейшее сферическое здание в мире, построенное для EXPO 2017 в Астане. Сейчас — музей будущей энергетики и устойчивых технологий." },
+        { name: "Дворец мира и согласия", subtitle: "Пирамида гармонии", desc: "Впечатляющая 62-метровая стеклянная пирамида Нормана Фостера — место проведения Съезда лидеров мировых и традиционных религий." },
+        { name: "Национальный музей", subtitle: "История Казахстана", desc: "Крупнейший музей Центральной Азии с более чем 44 000 артефактов, охватывающих историю Казахстана от древности до наших дней." },
+      ],
+    },
+    partners: {
+      label: "Партнёры и организаторы",
+      title: "При поддержке",
+      subtitle: "Чемпионат организован ведущей организацией дрон-спорта Казахстана в партнёрстве с международными институтами.",
+      organizer: "Официальный организатор",
+      intlPartner: "Международный партнёр",
+      supporters: "Сторонники и партнёры",
+      becomePartner: "Стать партнёром",
+      becomePartnerDesc: "Заинтересованы в спонсорстве или партнёрстве с Чемпионатом FIDA по дрон-футболу в Астане 2026?",
+      contactUs: "Связаться →",
+    },
+    cta: {
+      badge: "Регистрация открыта",
+      title: "Готовы к соревнованиям?",
+      subtitle: "Зарегистрируйте свою команду на Чемпионат FIDA по дрон-футболу в Астане 2026 и войдите в историю. Количество мест ограничено.",
+      register: "Зарегистрировать команду",
+      contact: "Связаться с организаторами",
+      follow: "Следите за новостями",
+      emailLabel: "Эл. почта",
+      websiteLabel: "Сайт",
+      locationLabel: "Место",
+      locationValue: "Астана, Казахстан",
+    },
+    footer: {
+      desc: "Чемпионат FIDA по дрон-футболу в Астане 2026 — международные соревнования по дрон-футболу, организованные Kazakhstan Drone Soccer по стандартам FIDA.",
+      navTitle: "Навигация",
+      navLinks: [
+        { label: "О мероприятии", href: "#about" },
+        { label: "Программа", href: "#program" },
+        { label: "Соревнования", href: "#highlights" },
+        { label: "Место проведения", href: "#venue" },
+        { label: "Отели", href: "#hotels" },
+        { label: "Астана", href: "#astana" },
+      ],
+      organizersTitle: "Организаторы",
+      officialOrg: "Официальный организатор",
+      intlPartner: "Международный партнёр",
+      contactTitle: "Контакты",
+      register: "Регистрация →",
+      rights: "Все права защищены.",
+      fidaNote: "На соревнованиях используются только официальные мячи и правила FIDA.",
+    },
+    registration: {
+      label: "Регистрация",
+      title: "Выберите категорию",
+      guest: "Гость",
+      guestDesc: "Посетите чемпионат в качестве зрителя или гостя",
+      media: "СМИ",
+      mediaDesc: "Зарегистрируйтесь как представитель прессы или медиа",
+      participant: "Участник",
+      participantDesc: "Зарегистрируйте свою команду для участия в чемпионате",
+      footer: "Чемпионат FIDA по дрон-футболу · 1 июня 2026",
+    },
+    countdown: {
+      label: "Регистрация команд закрывается через",
+      days: "д",
+      hours: "ч",
+      minutes: "мин",
+      seconds: "с",
+      register: "Зарегистрировать команду →",
+      closed: "Регистрация команд закрыта",
+      closedSub: "Регистрация для гостей и СМИ ещё открыта",
+    },
+    participantClosed: "🔒 Регистрация команд закрыта. Доступна только регистрация для гостей и СМИ.",
+  },
+
+  kk: {
+    nav: {
+      about: "Іс-шара туралы",
+      program: "Бағдарлама",
+      venue: "Орын",
+      hotels: "Қонақ үйлер",
+      astana: "Астана",
+      partners: "Серіктестер",
+      contact: "Байланыс",
+      register: "Тіркелу",
+    },
+    hero: {
+      badge: "Ресми FIDA іс-шарасы · 1 маусым 2026",
+      title1: "Астана FIDA",
+      title2: "Дрон-Футбол",
+      title3: "Чемпионаты 2026",
+      subtitle: "FIDA ережелері бойынша халықаралық дрон-футбол турнирі — спорт, технология және қазақ мәдениеті Астана жүрегінде кездесетін жер.",
+      date: "1 маусым 2026",
+      location: "Астана, Қазақстан",
+      intl: "Халықаралық жарыс",
+      register: "Тіркелу",
+      program: "Іс-шара бағдарламасы",
+      contact: "Ұйымдастырушылармен байланысу",
+      scroll: "Төмен жылжу",
+    },
+    about: {
+      label: "Іс-шара туралы",
+      title1: "Технология спортпен",
+      title2: "кездесетін жер",
+      p1: "Астана FIDA дрон-футбол чемпионаты 2026 — Қазақстан астанасында Халықаралық дрон-футбол ассоциациясы федерациясының (FIDA) ережелері мен стандарттары бойынша өткізілетін ресми халықаралық жарыс.",
+      p2: "Бүкіл әлем бойынша ұлттық командалар мен клубтарды біріктіре отырып, чемпионат дрон-инженерия шеберлігін, спорттық стратегияны және халықаралық спорттық достықты Астананың сәулетті көкжиегі аясында көрсетеді.",
+      stat1label: "Чемпионат күні",
+      stat2label: "Ресми стандарттар",
+      stat3label: "Қатысу",
+      stat4label: "Жыл",
+      f1title: "Халықаралық жарыс",
+      f1desc: "Бүкіл әлемнен ұлттық командалар мен клубтар FIDA ережелері бойынша бәсекеледі.",
+      f2title: "Тек FIDA доптары",
+      f2desc: "Қатысушы барлық дрондар FIDA-мен мақұлданған ресми дрон-футбол доптары болуы тиіс.",
+      f3title: "Спорт және мәдениет",
+      f3desc: "Шетелдік қонақтарға арналған толыққанды мәдени бағдарлама — ойыннан тыс Қазақстанды тану.",
+      f4title: "Салалық желілеу",
+      f4desc: "Бүкіл әлемнен дрон-спорт мамандарымен, педагогтармен және инноваторлармен танысыңыз.",
+    },
+    program: {
+      label: "Іс-шара кестесі",
+      title: "Бағдарлама",
+      subtitle: "Бес күн жарыс, мәдениет және байланыс — 29 мамырдан 2 маусымға дейін, 2026.",
+      note: "Бұл жарыста тек FIDA-мен мақұлданған ресми доптар мен FIDA ережелері қолданылады.",
+      mainDay: "★ Басты күн",
+      days: [
+        {
+          date: "29 мамыр", day: "Жұма", label: "0-күн", title: "Келу және тіркелу",
+          items: ["Халықаралық делегациялардың келуі", "Қонақ үйге орналасу және аккредитация", "Қош келдіңіз қабылдауы және брифинг"],
+        },
+        {
+          date: "30 мамыр", day: "Сенбі", label: "1-күн", title: "Жаттығу күні",
+          items: ["Тренерлер тренингі — жергілікті тренерлерге арналған семинар", "Шетелдік қонақтарға арналған мәдени бағдарлама", "Астана қаласына саяхат", "Жабдықтарды техникалық тексеру"],
+        },
+        {
+          date: "31 мамыр", day: "Жексенбі", label: "2-күн", title: "Жаттығу және іріктеу",
+          items: ["Таңертең: еркін жаттығу сессиялары", "Күндізі: іріктеу раундтары", "Кешінде: командалық кеш және желілеу"],
+        },
+        {
+          date: "1 маусым", day: "Дүйсенбі", label: "Басты күн", title: "Чемпионат күні",
+          items: ["Ашылу салтанаты", "Ұлттық командалық чемпионат матчтары", "Клубтық чемпионат — 40-класс және 20-класс", "Жастар арасындағы демонстрациялық матчтар", "Қоғамдық тәжірибе аймағы", "Марапаттау және жабылу салтанаты"],
+        },
+        {
+          date: "2 маусым", day: "Сейсенбі", label: "4-күн", title: "Кету күні",
+          items: ["Шетелдік қонақтарға арналған мәдени бағдарлама", "Қоштасу таңғы асы", "Делегациялардың шығуы мен кетуі"],
+        },
+      ],
+    },
+    highlights: {
+      label: "Жарыс бөлімдері",
+      title: "Не болады",
+      subtitle: "Қарқынды чемпионат матчтарынан қоғамдық көрмелерге дейін — дрон-футболдың толық спектрі.",
+      cta: "Жіберіп алмаңыз",
+      ctaTitle: "Чемпионаттағы орныңызды алыңыз",
+      register: "Тіркелу →",
+      items: [
+        { title: "Командалық чемпионат", desc: "Мемлекеттер FIDA-ның ресми жақпар форматы бойынша ұлттық дрон-футбол атағы үшін бетпе-бет бәсекеледі.", tag: "FIDA санкциясымен" },
+        { title: "Клубтық чемпионат", desc: "Клубтық командалар бүкіл әлем клубтарына ашық екі салмақ категориясында бәсекеседі: 40-класс және 20-класс.", tag: "40-класс және 20-класс" },
+        { title: "Жастар демонстрациясы", desc: "Жас ұшқыштар көрме матчтарында өрісте шығады, дрон-футболдың келесі буын талантын көрсетеді.", tag: "Жастар бөлімі" },
+        { title: "Ашылу және жабылу салтанаты", desc: "Қазақстанның мұрасы мен ұмтылысын бейнелейтін мәдени қойылымдармен ғажайып салтанатты тәжірибе.", tag: "1 маусым" },
+        { title: "Қоғамдық тәжірибе аймағы", desc: "Келушілер дрон-футболды тәжірибеде байқай алады — ұшырып көру, демонстрацияларды тамашалау және командалармен кездесу.", tag: "Барлығына ашық" },
+        { title: "Салалық желілеу", desc: "Бүкіл әлемнен дрон-спорт федерациясының мүшелерімен, инженерлермен, тренерлермен және демеушілермен танысыңыз.", tag: "Барлық мүдделі тараптар" },
+      ],
+    },
+    venue: {
+      label: "Орналасқан жері",
+      title: "Өткізілетін орын",
+      subtitle: "Чемпионат Қазақстанның заманауи астанасы Астанада өтеді.",
+      comingSoon: "Орын — жақында",
+      cityTitle: "Астана, Қазақстан",
+      desc: "Астанадағы нақты жарыс орны жақын арада расталып, хабарланады. Соңғы жаңартулар үшін ресми арналарымызды қадағалаңыз.",
+      mapNote: "Орын расталғаннан кейін бұл бетте жаңартылады. Ыңғайлы навигация үшін интерактивті карта орналастырылады.",
+      details: [
+        { label: "Қала", value: "Астана (Нұр-Сұлтан)" },
+        { label: "Ел", value: "Қазақстан Республикасы" },
+        { label: "Күні", value: "1 маусым 2026" },
+        { label: "Орын", value: "Хабарланады" },
+      ],
+    },
+    hotels: {
+      label: "Тұру",
+      title: "Ұсынылатын қонақ үйлер",
+      subtitle: "Астана әлемдік деңгейдегі тұруды ұсынады. Бұл қонақ үйлер чемпионат қатысушылары мен қонақтарға ұсынылады.",
+      disclaimer: "Тұру шығындарын қатысушылар өз есебінен төлейді. KDS аталған қонақ үйлермен жеңілдікті тарифтері жоқ. Ерте брондаңыз.",
+      viewHotel: "Қонақ үйді қарау",
+      hotels: [
+        { name: "The Ritz-Carlton Astana", category: "Ультра люкс", desc: "Астананың қаржы ауданының жүрегіндегі теңдессіз сервис пен панорамалық қала көрінісін ұсынатын атақты 5 жұлдызды қонақ үй." },
+        { name: "The St. Regis Astana", category: "Люкс", desc: "Нұрлы Тау бизнес кешеніндегі дворецкий қызметі мен әлемдік деңгейдегі мүмкіндіктермен талғампаз элеганттылық." },
+        { name: "Sheraton Astana Hotel", category: "Жоғары класс", desc: "Негізгі тартымды жерлердің жанында орналасқан қазіргі заманғы халықаралық қонақ үй." },
+        { name: "Hilton Astana", category: "Жоғары класс", desc: "Астананың атақты жағалауынан бірнеше қадам жерде заманауи дизайн мен қазақстандық қонақжайлылық." },
+        { name: "Wyndham Garden Astana", category: "Премиум", desc: "Қаланың негізгі нысандарына ыңғайлы қол жеткізімділігі бар ыңғайлы және жақсы жабдықталған қонақ үй." },
+      ],
+    },
+    attractions: {
+      label: "Астананы ашыңыз",
+      title: "Қала күтуде",
+      subtitle: "Чемпионаттан тыс Астана сәулеттік ғажайыптар мен мәдени тәжірибелер әлемін ұсынады.",
+      places: [
+        { name: "Байтерек", subtitle: "Астана символы", desc: "Алтын бақылау сферасы бар атақты 105 метрлік ескерткіш мұнара — заманауи Астананың анықтаушы символы." },
+        { name: "Хан Шатыр", subtitle: "Әлемдегі ең үлкен шатыр", desc: "140 000 м² алаңды қамтитын монументалды мөлдір шатыр конструкциясы — сауда орталығы, жағажай курорты және ойын-сауық кешені." },
+        { name: "Нұр Әлем / EXPO", subtitle: "Болашақ сферасы", desc: "Астанадағы EXPO 2017 үшін салынған әлемдегі ең үлкен сфералық ғимарат. Қазір — болашақ энергетикасы мен тұрақты технологиялар мұражайы." },
+        { name: "Бейбітшілік және татуластыру сарайы", subtitle: "Үйлесімділік пирамидасы", desc: "Норман Фостердің таң қалдыратын 62 метрлік шыны пирамидасы — Дүниежүзілік және дәстүрлі діндер съезінің орны." },
+        { name: "Ұлттық мұражай", subtitle: "Қазақстан тарихы", desc: "Орталық Азиядағы ең үлкен мұражай, ежелгі заманнан бүгінгі күнге дейін Қазақстан тарихын қамтитын 44 000-нан астам артефакт." },
+      ],
+    },
+    partners: {
+      label: "Серіктестер және ұйымдастырушылар",
+      title: "Қолдаушылар",
+      subtitle: "Чемпионат Қазақстанның жетекші дрон-спорт ұйымымен халықаралық институттармен серіктестікте ұйымдастырылады.",
+      organizer: "Ресми ұйымдастырушы",
+      intlPartner: "Халықаралық серіктес",
+      supporters: "Қолдаушылар мен серіктестер",
+      becomePartner: "Серіктес болу",
+      becomePartnerDesc: "Астана FIDA дрон-футбол чемпионаты 2026-ны демеуге немесе серіктестікке қызығушылық танытасыз ба?",
+      contactUs: "Байланысу →",
+    },
+    cta: {
+      badge: "Тіркеу ашылды",
+      title: "Жарысқа дайынсыз ба?",
+      subtitle: "Астана FIDA дрон-футбол чемпионаты 2026-ға командаңызды тіркеңіз және тарихтың бөлігі болыңыз. Орындар шектеулі.",
+      register: "Командаңызды тіркеу",
+      contact: "Ұйымдастырушылармен байланысу",
+      follow: "Жаңалықтарды қадағалаңыз",
+      emailLabel: "Эл. пошта",
+      websiteLabel: "Сайт",
+      locationLabel: "Орын",
+      locationValue: "Астана, Қазақстан",
+    },
+    footer: {
+      desc: "Астана FIDA дрон-футбол чемпионаты 2026 — FIDA стандарттары бойынша Kazakhstan Drone Soccer ұйымдастырған халықаралық дрон-футбол жарысы.",
+      navTitle: "Навигация",
+      navLinks: [
+        { label: "Іс-шара туралы", href: "#about" },
+        { label: "Бағдарлама", href: "#program" },
+        { label: "Жарыс", href: "#highlights" },
+        { label: "Өткізілетін орын", href: "#venue" },
+        { label: "Қонақ үйлер", href: "#hotels" },
+        { label: "Астананы ашыңыз", href: "#astana" },
+      ],
+      organizersTitle: "Ұйымдастырушылар",
+      officialOrg: "Ресми ұйымдастырушы",
+      intlPartner: "Халықаралық серіктес",
+      contactTitle: "Байланыс",
+      register: "Тіркелу →",
+      rights: "Барлық құқықтар қорғалған.",
+      fidaNote: "Бұл жарыста тек FIDA-мен мақұлданған ресми доптар мен ережелер қолданылады.",
+    },
+    registration: {
+      label: "Тіркеу",
+      title: "Санатыңызды таңдаңыз",
+      guest: "Қонақ",
+      guestDesc: "Чемпионатқа тамашашы немесе қонақ ретінде қатысыңыз",
+      media: "БАҚ",
+      mediaDesc: "Баспасөз немесе медиа өкілі ретінде тіркелу",
+      participant: "Қатысушы",
+      participantDesc: "Чемпионатқа қатысу үшін командаңызды тіркеңіз",
+      footer: "Астана FIDA дрон-футбол чемпионаты · 1 маусым 2026",
+    },
+    countdown: {
+      label: "Командалар тіркеуі жабылуына қалды",
+      days: "күн",
+      hours: "сағ",
+      minutes: "мин",
+      seconds: "с",
+      register: "Командаңызды тіркеу →",
+      closed: "Командалар тіркеуі жабылды",
+      closedSub: "Қонақтар мен БАҚ тіркеуі әлі ашық",
+    },
+    participantClosed: "🔒 Командалар тіркеуі жабылды. Тек қонақтар мен БАҚ тіркеуі қол жетімді.",
+  },
+} as const;
+
+export type Translations = typeof translations.en;
+
+const LangContext = createContext<{
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: Translations;
+}>({
+  lang: "en",
+  setLang: () => {},
+  t: translations.en,
+});
+
+export function LangProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("en");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("lang") as Lang;
+    if (saved && ["en", "ru", "kk"].includes(saved)) {
+      setLangState(saved);
+    } else {
+      const nav = navigator.language || "en";
+      if (nav.startsWith("kk")) setLangState("kk");
+      else if (nav.startsWith("ru")) setLangState("ru");
+    }
+  }, []);
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    localStorage.setItem("lang", l);
+  };
 
   return (
-    <section
-      id="program"
-      style={{
-        padding: "6rem 2rem",
-        background: "#f5f3ee",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Decorative line */}
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: 0,
-          bottom: 0,
-          width: "1px",
-          background: "linear-gradient(180deg, transparent, rgba(107,159,212,0.2), transparent)",
-          transform: "translateX(-50%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
-          <div className="section-sep-center" />
-          <p style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b9fd4", marginBottom: "0.75rem" }}>
-            {t.program.label}
-          </p>
-          <h2
-            style={{
-              fontSize: "clamp(2rem, 3.5vw, 2.8rem)",
-              fontWeight: 900,
-              color: "#0d1f4e",
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-              marginBottom: "1rem",
-            }}
-          >
-            {t.program.title}
-          </h2>
-          <p style={{ fontSize: "1rem", color: "#6b7a99", maxWidth: "500px", margin: "0 auto" }}>
-            {t.program.subtitle}
-          </p>
-        </div>
-
-        {/* Timeline */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {days.map((d) => (
-            <div
-              key={d.date}
-              className={`day-card${d.featured ? " featured" : ""}`}
-              style={{
-                background: d.featured
-                  ? "linear-gradient(135deg, #fff 0%, #fdf9f0 100%)"
-                  : "#fff",
-                borderRadius: "10px",
-                padding: "2rem 2rem 2rem 2.5rem",
-                display: "grid",
-                gridTemplateColumns: "160px 1fr",
-                gap: "2rem",
-                alignItems: "start",
-                boxShadow: d.featured
-                  ? "0 8px 32px rgba(201,168,76,0.15)"
-                  : "0 2px 12px rgba(13,31,78,0.05)",
-                position: "relative",
-              }}
-            >
-              {/* Date column */}
-              <div className="day-date-col">
-                <div
-                  className="day-date-inner"
-                  style={{
-                    display: "inline-flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    gap: "4px",
-                  }}
-                >
-                  {d.featured && (
-                    <span
-                      style={{
-                        background: "linear-gradient(135deg, #c9a84c, #e8c96a)",
-                        color: "#0d1f4e",
-                        fontSize: "0.62rem",
-                        fontWeight: 800,
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        padding: "3px 10px",
-                        borderRadius: "40px",
-                        marginBottom: "6px",
-                        display: "inline-block",
-                      }}
-                    >
-                      {t.program.mainDay}
-                    </span>
-                  )}
-                  <span
-                    style={{
-                      fontSize: "1.7rem",
-                      fontWeight: 900,
-                      color: d.featured ? "#c9a84c" : "#0d1f4e",
-                      lineHeight: 1,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {d.date}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      color: "#8299b8",
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {d.day}
-                  </span>
-                  <span
-                    style={{
-                      marginTop: "4px",
-                      fontSize: "0.68rem",
-                      fontWeight: 700,
-                      color: d.featured ? "#c9a84c" : "#6b9fd4",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      borderLeft: `2px solid ${d.featured ? "#c9a84c" : "#6b9fd4"}`,
-                      paddingLeft: "8px",
-                    }}
-                  >
-                    {d.label}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content column */}
-              <div>
-                <h3
-                  style={{
-                    fontSize: "1.1rem",
-                    fontWeight: 800,
-                    color: "#0d1f4e",
-                    marginBottom: "1rem",
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  {d.title}
-                </h3>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                  {d.items.map((item) => (
-                    <li
-                      key={item}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: "10px",
-                        fontSize: "0.9rem",
-                        color: "#3a5080",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: "6px",
-                          height: "6px",
-                          borderRadius: "50%",
-                          background: d.featured ? "#c9a84c" : "#6b9fd4",
-                          marginTop: "7px",
-                          flexShrink: 0,
-                        }}
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Note */}
-        <p
-          style={{
-            textAlign: "center",
-            marginTop: "2.5rem",
-            fontSize: "0.8rem",
-            color: "#8299b8",
-            fontStyle: "italic",
-          }}
-        >
-          {t.program.note}
-        </p>
-        {/* Notes */}
-        <div style={{ marginTop: "2.5rem", display: "flex", flexDirection: "column", gap: "0.75rem", alignItems: "center" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              background: "rgba(201,168,76,0.08)",
-              border: "1px solid rgba(201,168,76,0.3)",
-              borderRadius: "8px",
-              padding: "10px 20px",
-              fontSize: "0.82rem",
-              color: "#8a6d20",
-              fontStyle: "italic",
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-              <circle cx="8" cy="8" r="7.5" stroke="#c9a84c" strokeWidth="1.2"/>
-              <path d="M8 5v4M8 11v.5" stroke="#c9a84c" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            The event program is subject to change. Final schedule will be confirmed closer to the event date.
-          </div>
-          <p style={{ fontSize: "0.78rem", color: "#8299b8", fontStyle: "italic", textAlign: "center" }}>
-            This competition must use only FIDA-approved official balls and FIDA rules.
-          </p>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 640px) {
-          .day-card { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-    </section>
+    <LangContext.Provider value={{ lang, setLang, t: translations[lang] as Translations }}>
+      {children}
+    </LangContext.Provider>
   );
+}
+
+export function useLang() {
+  return useContext(LangContext);
 }
